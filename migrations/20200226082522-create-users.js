@@ -29,6 +29,9 @@ module.exports = {
       role: {
         type: Sequelize.STRING
       },
+      isLoggedIn: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
