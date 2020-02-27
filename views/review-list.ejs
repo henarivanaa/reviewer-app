@@ -1,7 +1,9 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 <div class="container-fluid mt-5">
-    <table class="table">
+    <h1 class="text-center"><%= restaurantName %> Reviews</h1>
+    <a class="btn btn-primary" href="/restaurants/<%= restaurantId %>/addReview">Add a Review</a>
+    <table class="table mt-3">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">Review</th>
@@ -20,6 +22,9 @@
                 <td><%= element.email%></td>
                 <td><%= element.username%></td>
                 <td><a href="/restaurants/<%= restaurantId %>/<%= element.id %>/upvote"><button type="button" class="btn btn-primary">+</button></a> <%= element.RestaurantUser.review_rating %>
+                <% if (role === 'admin level') { %>
+                    <a href="/restaurants/admin/delete/<%= restaurantId %>/<%= element.id %>">Remove</a> 
+                <% } %>
                 </td>
             </tr>
             <% }) %>

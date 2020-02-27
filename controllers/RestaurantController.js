@@ -2,7 +2,7 @@ const { User, Restaurant, RestaurantUser } = require('../models')
 
 class RestaurantController {
     static findAll(req, res) {
-        Restaurant.findAll()
+        Restaurant.findAll({ order: [['rating', 'DESC']] })
             .then(restaurant => {
                 res.render('restaurant-list', { restaurants:restaurant })
             })
@@ -13,10 +13,11 @@ class RestaurantController {
 
     static reviewList (req, res) {
         let id = req.params.id
+        let role = req.session.user.role
         Restaurant.findByPk(id, { include: [ User ] })
             .then(restaurant => {
-                // res.send(restaurant.Users)
-                res.render('review-list', { data: restaurant.Users, restaurantId: id })
+                restaurant.Users.sort((a,b) => b.RestaurantUser.review_rating - a.RestaurantUser.review_rating)
+                res.render('review-list', { data: restaurant.Users, restaurantId: id , restaurantName:restaurant.name, role})
             })
             .catch(err => {
                 res.send(err)
@@ -31,22 +32,33 @@ class RestaurantController {
     static addReviewAndRating(req, res) {
         let id = req.params.id
         let { review_desc, rating } = req.body
-        let newReview = {
-            review_desc
-        }
+        let tempRating
         Restaurant.findByPk(id, { include: [ User ] })
             .then(restaurant => {
-                let tempRating = ((restaurant.rating * restaurant.Users.length) + rating) / restaurant.Users.length + 1
+                if (restaurant.rating === 0) {
+                    tempRating = Number(rating)
+                } else {
+                    tempRating = restaurant.rating * restaurant.Users.length
+                    tempRating += Number(rating)
+                    tempRating /= restaurant.Users.length + 1
+                }
+                console.log(restaurant.rating, rating, tempRating, restaurant.Users.length)
                 let newRating = {
                     rating: tempRating
                 }
                 return Restaurant.update(newRating, { where: { id } })
             })
             .then(() => {
-                return RestaurantUser.update(newReview, { where: { restaurantId: id } })
+                let newReview = {
+                    review_rating: 0,
+                    review_desc,
+                    restaurantId: id,
+                    userId: req.session.user.id
+                }
+                return RestaurantUser.create(newReview)
             })
             .then(() => {
-                res.redirect(`/${id}/review`)
+                res.redirect(`/restaurants/${id}/review`)
             })
             .catch(err => {
                 res.send(err)
@@ -72,7 +84,27 @@ class RestaurantController {
                 return RestaurantUser.update({ review_rating: newRating }, { where: optionWhere })
             })
             .then(() => {
-                console.log('masooook')
+                res.redirect(`/restaurants/${restaurantId}/review`)
+            })
+            .catch(err => {
+                res.send(err)
+            })
+    }
+
+    static remove (req, res) {
+        if (req.session.user.role !== 'admin level') {
+            res.redirect('/users/login')
+        }
+        let restaurantId = req.params.restaurantId
+        let userId = req.params.userId
+
+        RestaurantUser.destroy({
+            where: {
+                restaurantId,
+                userId
+            }
+        })
+            .then(() => {
                 res.redirect(`/restaurants/${restaurantId}/review`)
             })
             .catch(err => {
