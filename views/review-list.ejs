@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<div class="container-fluid mt-5">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Review</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Username</th>
+                <th scope="col">Helpful?</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% data.forEach(element => { %>
+            <tr>
+                <td><%= element.RestaurantUser.review_desc %></td>
+                <td><%= element.first_name + element.last_name%></td>
+                <td><%= element.email%></td>
+                <td><%= element.username%></td>
+                <td><a href="/restaurants/<%= restaurantId %>/<%= element.id %>/upvote"><button type="button" class="btn btn-primary">+</button></a> <%= element.RestaurantUser.review_rating %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+<%- include('partials/footer') %>

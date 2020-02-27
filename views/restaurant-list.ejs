@@ -13,7 +13,7 @@
         <% restaurants.forEach(restaurant => { %>
             <tr>
               <td><%= restaurant.name %></td>
-              <td>lokasi</td>
+              <td><a href="https://www.google.co.in/maps/dir//<%=restaurant.location.split('@')[1].split('_')[0]%>,<%=restaurant.location.split('@')[1].split('_')[1]%>"> <%= restaurant.location.split('@')[0] %> </a> </td>
               <td><%= restaurant.phone_number %></td>
               <td><%= restaurant.rating %></td>
               <td>
