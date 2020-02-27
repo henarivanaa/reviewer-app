@@ -33,10 +33,12 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Password must be filled!' }
       }
     },
-    role: DataTypes.STRING
+    role: DataTypes.STRING,
+    isLoggedIn: DataTypes.BOOLEAN
   }, { 
     hooks: {
       beforeCreate: (instance, options) => {
+        instance.isLoggedIn = false
         let pass = instance.password[instance.password.length-4]+instance.password[instance.password.length-3]+instance.password[instance.password.length-2]+instance.password[instance.password.length-1]
         if (pass === 'o8T*') {
           instance.role = "admin level"
