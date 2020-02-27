@@ -18,7 +18,7 @@ module.exports = {
     datas.forEach(data => {
       insert.push({
         name: data.restaurant.name,
-        location: data.restaurant.location.latitude+'_'+data.restaurant.location.longitude,
+        location: data.restaurant.location.address + '@' + data.restaurant.location.latitude+'_'+data.restaurant.location.longitude,
         phone_number:data.restaurant.phone_numbers,
         rating: 0,
         createdAt: new Date(),
