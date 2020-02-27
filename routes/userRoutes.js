@@ -13,6 +13,7 @@ router.use('/login', (req, res, next) => {
         username,
         password
     }
+    console.log('masuk')
     if (req.session.user) {
         next()
     } else {

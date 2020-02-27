@@ -1,5 +1,5 @@
 <%- include('partials/header') %>
-
+<%- include('partials/navbar') %>
 <div class="container-fluid mt-5">
     <table class="table">
         <thead class="thead-dark">
@@ -16,7 +16,7 @@
             <% data.forEach(element => { %>
             <tr>
                 <td><%= element.RestaurantUser.review_desc %></td>
-                <td><%= element.first_name + element.last_name%></td>
+                <td><%= element.getFullName() %></td>
                 <td><%= element.email%></td>
                 <td><%= element.username%></td>
                 <td><a href="/restaurants/<%= restaurantId %>/<%= element.id %>/upvote"><button type="button" class="btn btn-primary">+</button></a> <%= element.RestaurantUser.review_rating %>
