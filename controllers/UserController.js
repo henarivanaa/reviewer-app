@@ -3,7 +3,11 @@ const { hasher, bcrypt, comparer } = require('../helpers/bcrypt')
 
 class UserController {
     static loginForm (req, res) {
-        res.render('loginForm')
+        if (!req.session.user) {
+            res.render('loginForm')
+        } else {
+            res.redirect('/restaurants')
+        }
     }
 
     static findAll (req, res) {
@@ -42,12 +46,20 @@ class UserController {
 
     static login (req, res) {
         let { username, password } = req.body
+        req.session.user = {
+            username,
+            password
+        }
+        let userId
+        let userRole
         User.findOne({
             where: {
                 username: username
             }
         })
             .then(user => {
+                userId = user.id
+                userRole = user.role
                 if (!user) {
                     res.send('Username Salah')
                 }
@@ -55,11 +67,19 @@ class UserController {
             })
             .then(authorized => {
                 if (authorized) {
-                    res.redirect('/')
+                    req.session.user.id = userId 
+                    req.session.user.role = userRole
+                    res.redirect('/restaurants')
                 } else {
                     res.send('Password Salah')
                 }
             })
+    }
+
+    static logout (req, res) {
+        req.session.destroy(err => {
+            res.redirect('/restaurants')
+        })
     }
 }
 

@@ -2,7 +2,7 @@
 <%- include('partials/navbar') %>
 <div class="container">
     <h1 class="mt-4">Add Review</h1>
-    <form action="/<%= id %>/review" method="POST" class="mt-3">
+    <form action="/restaurants/<%= id %>/addReview" method="POST" class="mt-3">
         <div class="form-group">
             <label for="review_desc">Write Your Review</label>
             <textarea class="form-control" rows="3" name="review_desc" placeholder="Be Honest, You can trust us"></textarea>
